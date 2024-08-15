@@ -1,0 +1,6 @@
+@ShopTaskBd_HostAddress = http://localhost:5240
+
+GET {{ShopTaskBd_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
