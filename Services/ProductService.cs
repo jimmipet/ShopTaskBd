@@ -13,6 +13,11 @@ public class ProductService
 
     public async Task FetchAndSaveProductsAsync()
     {
+        if (_context.Products.Any())
+        {
+            return;
+        }
+
         var response = await _httpClient.GetAsync("https://fakestoreapi.com/products");
         response.EnsureSuccessStatusCode();
 
@@ -20,11 +25,7 @@ public class ProductService
         var products = JsonSerializer.Deserialize<List<Product>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         if (products != null)
-        {   
-            //плохой вариант перезаписывать каждый раз
-            _context.Products.RemoveRange(_context.Products);
-            await _context.SaveChangesAsync();
-
+        {
             _context.Products.AddRange(products);
             await _context.SaveChangesAsync();
         }
