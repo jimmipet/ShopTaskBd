@@ -1,32 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using ShopTaskBD;
 
 [ApiController]
 [Route("/products")]
-public class ProductsController : ControllerBase
+public class ProductController : ControllerBase
 {
     private readonly ProductService _productService;
-    private readonly ApplicationDbContext _context;
 
-    public ProductsController(ProductService productService, ApplicationDbContext context)
+    public ProductController(ProductService productService)
     {
         _productService = productService;
-        _context = context;
-    }
-
-    [HttpPost("save")]
-    public async Task<IActionResult> FetchAndSaveProducts()
-    {
-        await _productService.FetchAndSaveProductsAsync();
-        return Ok("Данные были добавлены в базу данных");
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
-            var products = await (from p in _context.Products
-                          orderby p.id 
-                          select p).ToListAsync();
+        var products = await _productService.GetProductsAsync();
         if (products == null)
         {
             return NotFound();
@@ -37,13 +26,51 @@ public class ProductsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = await (from p in _context.Products
-                             where p.id == id
-                             select p).FirstOrDefaultAsync();
+        var product = await _productService.GetProductByIdAsync(id);
         if (product == null)
         {
             return NotFound();
         }
         return Ok(product);
+    }
+
+    [HttpPost("{id}/addtocart")]
+    public async Task<IActionResult> AddToCart(int id)
+    {
+        var result = await _productService.AddProductToCartAsync(id);
+        if (!result)
+        {
+            return BadRequest("Не удалось добавить товар в корзину.");
+        }
+        return Ok(result);
+    }
+
+    [HttpGet("cart")]
+    public async Task<ActionResult<IEnumerable<Cart>>> GetCartItems()
+    {
+        var cartItems = await _productService.GetCartItemsAsync();
+        return Ok(cartItems);
+    }
+
+    [HttpDelete("{id}/removefromcart")]
+    public async Task<IActionResult> RemoveFromCart(int id)
+    {
+        var result = await _productService.RemoveProductFromCartAsync(id);
+        return Ok(result);
+    }
+
+
+    [HttpPost("{id}/increasequantity")]
+    public async Task<IActionResult> IncreaseQuantity(int id)
+    {
+        var result =  await _productService.IncreaseProductQuantityAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPost("{id}/decreasequantity")]
+    public async Task<IActionResult> DecreaseQuantity(int id)
+    {
+        var result = await _productService.DecreaseProductQuantityAsync(id);
+        return Ok(result);
     }
 }
