@@ -60,14 +60,14 @@ public class ProductController : ControllerBase
     }
 
 
-    [HttpPost("{id}/increasequantity")]
+    [HttpPut("{id}/increasequantity")]
     public async Task<IActionResult> IncreaseQuantity(int id)
     {
         var result =  await _productService.IncreaseProductQuantityAsync(id);
         return Ok(result);
     }
 
-    [HttpPost("{id}/decreasequantity")]
+    [HttpPut("{id}/decreasequantity")]
     public async Task<IActionResult> DecreaseQuantity(int id)
     {
         var result = await _productService.DecreaseProductQuantityAsync(id);
