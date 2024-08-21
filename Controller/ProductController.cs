@@ -63,7 +63,7 @@ public class ProductController : ControllerBase
     [HttpPut("{id}/increasequantity")]
     public async Task<IActionResult> IncreaseQuantity(int id)
     {
-        var result =  await _productService.IncreaseProductQuantityAsync(id);
+        var result = await _productService.IncreaseProductQuantityAsync(id);
         return Ok(result);
     }
 
@@ -71,6 +71,36 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> DecreaseQuantity(int id)
     {
         var result = await _productService.DecreaseProductQuantityAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPost("add-new-product")]
+
+    public async Task<IActionResult> CreateProduct([FromBody] CardItemDto productDto)
+    {
+        if (productDto == null)
+        {
+            return BadRequest("Invalid product data.");
+        }
+
+        var newProductId = await _productService.CreateProductAsync(productDto);
+        return Ok(newProductId);
+    }
+
+    [HttpPut("{id}/update")]
+    public async Task<IActionResult> UpdateProduct(int id, [FromBody] CardItemDto productDto)
+    {
+        if (productDto == null)
+        {
+            return BadRequest("Invalid product data.");
+        }
+
+        var result = await _productService.UpdateProductAsync(id, productDto);
+        if (!result)
+        {
+            return NotFound("Product not found.");
+        }
+
         return Ok(result);
     }
 }

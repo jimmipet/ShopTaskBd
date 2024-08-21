@@ -96,4 +96,42 @@ public class ProductService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<int> CreateProductAsync(CardItemDto productDto)
+    {
+        Product product;
+
+        product = new Product(
+            title: productDto.Title,
+            price: productDto.Price,
+            description: productDto.Description,
+            category: productDto.Category,
+            image: productDto.Image,
+            id: 0,
+            ratingId: null
+        );
+
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+        return product.Id;
+    }
+
+    public async Task<bool> UpdateProductAsync(int id, CardItemDto productDto)
+    {
+        var updateProduct = await _context.Products.FindAsync(id);
+        if (updateProduct == null)
+        {
+            return false;
+        }
+
+        updateProduct.Title = productDto.Title;
+        updateProduct.Price = productDto.Price;
+        updateProduct.Description = productDto.Description;
+        updateProduct.Category = productDto.Category;
+        updateProduct.Image = productDto.Image;
+
+        _context.Products.Update(updateProduct);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

@@ -12,7 +12,7 @@ namespace ShopTaskBD
         public int? RatingId { get; set; }
 
         // Конструктор
-        public Product(int id, string? title, decimal price, string? description, string? category, string? image, int? ratingId)
+        public Product(int id , string? title, decimal price, string? description, string? category, string? image, int? ratingId)
         {
             Id = id;
             Title = title;

@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ShopTaskBd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240818165410_AddCartItemTable")]
-    partial class AddCartItemTable
+    [Migration("20240821095618_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
