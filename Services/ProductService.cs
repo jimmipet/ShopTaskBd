@@ -41,13 +41,17 @@ public class ProductService
         }
         else
         {
-            cartItem = new Cart(product.Id, product.Title, product.Price, product.Description, product.Category, product.Image);
+            cartItem = new Cart(product.Id, product.Title, product.Price, product.Description, product.Category, product.Image)
+            {
+                Count = 1
+            };
             _context.Carts.Add(cartItem);
         }
 
         await _context.SaveChangesAsync();
         return true;
     }
+
     //получение товаров корзины
     public async Task<List<Cart>> GetCartItemsAsync()
     {
@@ -87,6 +91,7 @@ public class ProductService
     public async Task<bool> DecreaseProductQuantityAsync(int productId)
     {
         var cartItem = await _context.Carts.FirstOrDefaultAsync(ci => ci.Id == productId);
+        Console.WriteLine(cartItem);
         if (cartItem == null || cartItem.Count <= 1)
         {
             return false;
@@ -99,29 +104,35 @@ public class ProductService
 
     public async Task<int> CreateProductAsync(CardItemDto productDto)
     {
-        Product product;
+        var product = CreateProduct(productDto);
 
-        product = new Product(
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+        product.RatingId = product.Id;
+
+        _context.Products.Update(product);
+        await _context.SaveChangesAsync();
+
+        return product.Id;
+    }
+    private Product CreateProduct(CardItemDto productDto)
+    {
+        return new Product(
+            id: 0,
             title: productDto.Title,
             price: productDto.Price,
             description: productDto.Description,
             category: productDto.Category,
             image: productDto.Image,
-            id: 0,
             ratingId: null
         );
-
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
-        return product.Id;
     }
-
-    public async Task<bool> UpdateProductAsync(int id, CardItemDto productDto)
+    public async Task<int?> UpdateProductAsync(int id, CardItemDto productDto)
     {
         var updateProduct = await _context.Products.FindAsync(id);
         if (updateProduct == null)
         {
-            return false;
+            return null;
         }
 
         updateProduct.Title = productDto.Title;
@@ -132,6 +143,6 @@ public class ProductService
 
         _context.Products.Update(updateProduct);
         await _context.SaveChangesAsync();
-        return true;
+        return updateProduct.Id; ;
     }
 }

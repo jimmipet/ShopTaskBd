@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ShopTaskBd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240821095618_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240826101402_AddRatingNavigationToProduct")]
+    partial class AddRatingNavigationToProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,25 +84,6 @@ namespace ShopTaskBd.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("ShopTaskBD.Rating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Rate")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ratings");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,8 +15,7 @@ namespace ShopTaskBD
         {
             Id = id;
             Title = title;
-            Count = 1;
-            Price = price * Count;
+            Price = price;
             Description = description;
             Category = category;
             Image = image;

@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ShopTaskBd.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class AddRatingNavigationToProduct : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,20 +46,6 @@ namespace ShopTaskBd.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Ratings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Rate = table.Column<decimal>(type: "numeric", nullable: false),
-                    Count = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ratings", x => x.Id);
-                });
         }
 
         /// <inheritdoc />
@@ -70,9 +56,6 @@ namespace ShopTaskBd.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Ratings");
         }
     }
 }

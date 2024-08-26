@@ -82,25 +82,6 @@ namespace ShopTaskBd.Migrations
 
                     b.ToTable("Products");
                 });
-
-            modelBuilder.Entity("ShopTaskBD.Rating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Rate")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ratings");
-                });
 #pragma warning restore 612, 618
         }
     }

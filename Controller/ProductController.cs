@@ -18,7 +18,7 @@ public class ProductController : ControllerBase
         var products = await _productService.GetProductsAsync();
         if (products == null)
         {
-            return NotFound();
+            return NoContent();
         }
         return Ok(products);
     }
@@ -42,13 +42,17 @@ public class ProductController : ControllerBase
         {
             return BadRequest("Не удалось добавить товар в корзину.");
         }
-        return Ok(result);
+        return NoContent();
     }
 
     [HttpGet("cart")]
     public async Task<ActionResult<IEnumerable<Cart>>> GetCartItems()
     {
         var cartItems = await _productService.GetCartItemsAsync();
+        if (cartItems == null || !cartItems.Any())
+        {
+            return NoContent();
+        }
         return Ok(cartItems);
     }
 
@@ -56,7 +60,11 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> RemoveFromCart(int id)
     {
         var result = await _productService.RemoveProductFromCartAsync(id);
-        return Ok(result);
+        if (!result)
+        {
+            return NotFound("Продукт не найден в корзине.");
+        }
+        return NoContent();
     }
 
 
@@ -64,43 +72,48 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> IncreaseQuantity(int id)
     {
         var result = await _productService.IncreaseProductQuantityAsync(id);
-        return Ok(result);
+        if (!result)
+        {
+            return NotFound("Продукт не найден.");
+        }
+        return NoContent();
     }
 
     [HttpPut("{id}/decreasequantity")]
     public async Task<IActionResult> DecreaseQuantity(int id)
     {
-        var result = await _productService.DecreaseProductQuantityAsync(id);
-        return Ok(result);
+        await _productService.DecreaseProductQuantityAsync(id);
+        return NoContent();
     }
 
-    [HttpPost("add-new-product")]
+    [HttpPost]
 
     public async Task<IActionResult> CreateProduct([FromBody] CardItemDto productDto)
     {
         if (productDto == null)
         {
-            return BadRequest("Invalid product data.");
+            return BadRequest("Неверные данные");
         }
 
         var newProductId = await _productService.CreateProductAsync(productDto);
         return Ok(newProductId);
     }
 
-    [HttpPut("{id}/update")]
+    [HttpPut]
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] CardItemDto productDto)
     {
         if (productDto == null)
         {
-            return BadRequest("Invalid product data.");
+            return BadRequest("Неверные данные");
         }
 
-        var result = await _productService.UpdateProductAsync(id, productDto);
-        if (!result)
+        var updatedProductId = await _productService.UpdateProductAsync(id, productDto);
+        if (updatedProductId == null)
         {
-            return NotFound("Product not found.");
+            return NotFound("Продукт не найден");
         }
 
-        return Ok(result);
+        return Ok(updatedProductId);
     }
+
 }
